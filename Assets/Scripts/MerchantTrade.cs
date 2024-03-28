@@ -16,6 +16,9 @@ public class MerchantTrade : MonoBehaviour
     [SerializeField]
     private FirstPersonCamera firstPersonCamera;
 
+    [SerializeField]
+    private GameManager gameManager;
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -26,6 +29,7 @@ public class MerchantTrade : MonoBehaviour
         //    Interactionprompt.SetActive(false);
         //    TradeUI.SetActive(true);
         //}
+        gameManager.TradewMerchant();
     }
 
     private void OnTriggerStay(Collider other)
@@ -49,6 +53,7 @@ public class MerchantTrade : MonoBehaviour
         TradeUI.SetActive(false);
         randomMovement.setInteractingStatus(false);
         firstPersonCamera.enabled = true;
+        
     }
 
 }

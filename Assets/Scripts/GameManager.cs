@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    
+
     private int NoOfFeathers = 0;
     [SerializeField]
     private int NoOfDrinks = 0;
@@ -39,12 +39,23 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private PDC playerDialogue;
 
-    
+    [SerializeField]
+    private MerchantTrade merchantTrade;
+
+    [SerializeField]
+    private TextMeshProUGUI merchantText;
+
+    [SerializeField]
+    private string[] merchantSpeeches1 = {"Greetings", "Hi", "Hello"};
+    [SerializeField]
+    private string[] merchantSpeeches2 = { "Bye", "Good Deal", "Thanks" };
+
 
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Confined;
+
         FinalLight = KeyLight.GetComponent<Light>();
         FinalLight.gameObject.SetActive(false);
 
@@ -121,6 +132,13 @@ public class GameManager : MonoBehaviour
         StopCoroutine(TextExpire());
     }
 
+    private IEnumerator MerchantTextExpire()
+    {
+        yield return new WaitForSeconds(1.25f);
+        merchantText.gameObject.SetActive(false);
+        StopCoroutine(MerchantTextExpire());
+    }
+
     public void TradeDrinks()
     {
         if (NoOfDrinks >= 2)
@@ -138,11 +156,21 @@ public class GameManager : MonoBehaviour
     public void CloseTradeUI()
     { 
         TradeUI_GM.SetActive(false);
+        merchantText.text = merchantSpeeches2[Random.Range(0, merchantSpeeches1.Length)];
+        merchantText.gameObject.SetActive(true);
+        StartCoroutine(MerchantTextExpire());
     }
 
     public void RollNoOfDrinks()
     { 
         NoOfDrinks = Random.Range(1, 3);
+    }
+
+    public void TradewMerchant()
+    {
+        merchantText.text = merchantSpeeches1[Random.Range(0, merchantSpeeches1.Length)];
+        merchantText.gameObject.SetActive(true);
+        StartCoroutine(MerchantTextExpire());
     }
 
 }

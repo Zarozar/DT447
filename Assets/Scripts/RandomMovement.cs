@@ -23,6 +23,7 @@ public class RandomMovement : MonoBehaviour
     
     void Update()
     {
+
         if (!interacting)
         {
             agent.speed = 3.5f;
@@ -65,5 +66,11 @@ public class RandomMovement : MonoBehaviour
     { 
         interacting = status;
     }
-    
+
+    void OnDrawGizmosSelected()
+    {
+        // Display the explosion radius when selected
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, range);
+    }
 }
