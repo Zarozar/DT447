@@ -6,7 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    
     private int NoOfFeathers = 0;
+    [SerializeField]
     private int NoOfDrinks = 0;
     private int NoOfFakes = 0;
     [SerializeField]
@@ -21,11 +23,17 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI PlayerText;
 
     [SerializeField]
+    private GameObject TradeUI_GM;
+
+    [SerializeField]
     private GameObject KeyLight;
     private Light FinalLight;
 
+    [SerializeField]
     private int maxNoOfFeathers = 4;
+    [SerializeField]
     private int maxNoOfDrinks = 4;
+    [SerializeField]
     private int maxNoOfFakes = 1;
 
     [SerializeField]
@@ -36,10 +44,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Confined;
         FinalLight = KeyLight.GetComponent<Light>();
         FinalLight.gameObject.SetActive(false);
 
-        feathersTUI.text = "No Of Feathers: " + NoOfFeathers.ToString() + " / " + maxNoOfFeathers.ToString();
+        
         VictoryText.gameObject.SetActive(false);
         //foreach (Transform t in Spawnlocation)
         //{
@@ -50,7 +59,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (NoOfFeathers >= 3)
+        feathersTUI.text = "No Of Feathers: " + NoOfFeathers.ToString() + " / " + maxNoOfFeathers.ToString();
+        drinksTUI.text = "No Of Drinks: " + NoOfDrinks.ToString() + " / " + maxNoOfDrinks.ToString();
+        fakesTUI.text = "No Of Fakes: " + NoOfFakes.ToString() + " / " + maxNoOfFakes.ToString();
+
+        if (NoOfFeathers >= maxNoOfFeathers - 1)
         {
             FinalLight.gameObject.SetActive(true);
         }
@@ -86,7 +99,7 @@ public class GameManager : MonoBehaviour
     public void IncrementDrinksCount()
     {
         NoOfDrinks++;
-        drinksTUI.text = "No Of Feathers: " + maxNoOfDrinks.ToString() + " / " + maxNoOfDrinks.ToString();
+        drinksTUI.text = "No Of Drinks: " + NoOfDrinks.ToString() + " / " + maxNoOfDrinks.ToString();
         PlayerText.gameObject.SetActive(true);
         PlayerText.text = playerDialogue.GetDrinkText().ToString();
         StartCoroutine(TextExpire());
@@ -95,7 +108,7 @@ public class GameManager : MonoBehaviour
     public void IncrementFakesCount()
     {
         NoOfFakes++;
-        fakesTUI.text = "No Of Fakes: " + maxNoOfFakes.ToString() + " / " + maxNoOfFakes.ToString();
+        fakesTUI.text = "No Of Fakes: " + NoOfFakes.ToString() + " / " + maxNoOfFakes.ToString();
         PlayerText.gameObject.SetActive(true);
         PlayerText.text = playerDialogue.GetFakesText().ToString();
         StartCoroutine(TextExpire());
@@ -107,4 +120,29 @@ public class GameManager : MonoBehaviour
         PlayerText.gameObject.SetActive(false);
         StopCoroutine(TextExpire());
     }
+
+    public void TradeDrinks()
+    {
+        if (NoOfDrinks >= 2)
+        {
+            NoOfFeathers++;
+            NoOfDrinks -= 2;
+            feathersTUI.text = "No Of Feathers: " + NoOfFeathers.ToString() + " / " + maxNoOfFeathers.ToString();
+            drinksTUI.text = "No Of Drinks: " + NoOfDrinks.ToString() + " / " + maxNoOfDrinks.ToString();
+            PlayerText.gameObject.SetActive(true);
+            PlayerText.text = playerDialogue.GetFeatherText().ToString();
+            StartCoroutine(TextExpire());
+        }
+    }
+
+    public void CloseTradeUI()
+    { 
+        TradeUI_GM.SetActive(false);
+    }
+
+    public void RollNoOfDrinks()
+    { 
+        NoOfDrinks = Random.Range(1, 3);
+    }
+
 }
