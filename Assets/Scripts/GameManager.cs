@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int NoOfDrinks = 0;
     private int NoOfFakes = 0;
+    private int NoOfGCount = 0;
+
     [SerializeField]
     private TextMeshProUGUI feathersTUI;
     [SerializeField]
@@ -36,6 +38,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int maxNoOfFakes = 1;
 
+
+    [SerializeField]
+    private TextMeshProUGUI gCountTUI;
+
     [SerializeField]
     private PDC playerDialogue;
 
@@ -44,6 +50,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI merchantText;
+
+    [SerializeField]
+    private Collectables collectManager;
 
     [SerializeField]
     private string[] merchantSpeeches1 = {"Greetings", "Hi", "Hello"};
@@ -73,6 +82,7 @@ public class GameManager : MonoBehaviour
         feathersTUI.text = "No Of Feathers: " + NoOfFeathers.ToString() + " / " + maxNoOfFeathers.ToString();
         drinksTUI.text = "No Of Drinks: " + NoOfDrinks.ToString() + " / " + maxNoOfDrinks.ToString();
         fakesTUI.text = "No Of Fakes: " + NoOfFakes.ToString() + " / " + maxNoOfFakes.ToString();
+        gCountTUI.text = "No Of Gacha rolls: " + NoOfGCount.ToString();
 
         if (NoOfFeathers >= maxNoOfFeathers - 1)
         {
@@ -100,11 +110,14 @@ public class GameManager : MonoBehaviour
 
     public void IncrementFeatherCount()
     {
+        Debug.Log("increment, f");
         NoOfFeathers++;
         feathersTUI.text = "No Of Feathers: " + NoOfFeathers.ToString() + " / " + maxNoOfFeathers.ToString();
+        gCountTUI.text = "No Of Gacha rolls: " + NoOfGCount.ToString();
         PlayerText.gameObject.SetActive(true);
         PlayerText.text = playerDialogue.GetFeatherText().ToString();
         StartCoroutine(TextExpire());
+        NoOfGCount++;
     }
 
     public void IncrementDrinksCount()
@@ -139,16 +152,16 @@ public class GameManager : MonoBehaviour
         StopCoroutine(MerchantTextExpire());
     }
 
-    public void TradeDrinks()
+    public void RollItem()
     {
-        if (NoOfDrinks >= 2)
+        if (NoOfGCount >= 0)
         {
-            NoOfFeathers++;
-            NoOfDrinks -= 2;
-            feathersTUI.text = "No Of Feathers: " + NoOfFeathers.ToString() + " / " + maxNoOfFeathers.ToString();
-            drinksTUI.text = "No Of Drinks: " + NoOfDrinks.ToString() + " / " + maxNoOfDrinks.ToString();
+            int r = Random.Range(0, 4);
+
+            collectManager.AdjustColColor(r, NoOfGCount);
             PlayerText.gameObject.SetActive(true);
-            PlayerText.text = playerDialogue.GetFeatherText().ToString();
+            NoOfGCount--;
+            PlayerText.text = playerDialogue.GetGachaText(r).ToString();
             StartCoroutine(TextExpire());
         }
     }
@@ -159,11 +172,6 @@ public class GameManager : MonoBehaviour
         merchantText.text = merchantSpeeches2[Random.Range(0, merchantSpeeches1.Length)];
         merchantText.gameObject.SetActive(true);
         StartCoroutine(MerchantTextExpire());
-    }
-
-    public void RollNoOfDrinks()
-    { 
-        NoOfDrinks = Random.Range(1, 3);
     }
 
     public void TradewMerchant()
