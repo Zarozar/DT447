@@ -7,18 +7,24 @@ using System.Diagnostics;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class ClientCode
+public class ClientCode : MonoBehaviour 
 {
-    async void Start()
-    {
-        var client = new UDPClient();
-        client.Initialize(IPAddress.Loopback, UDPServer.PORT);
-        client.StartMessageLoop();
+    UDPClient client;
 
+    private void Start()
+    {
+        client = new UDPClient();
+        client.Initialize(IPAddress.Loopback, UDPServer.PORT);
+    }
+
+    async void Update()
+    {
+        client.StartMessageLoop();
         await client.Send(Encoding.UTF8.GetBytes("Hello!"));
         UnityEngine.Debug.Log("Msg Sent");
 
         UnityEngine.Debug.Log(Console.ReadLine());
     }
+
 
 }
